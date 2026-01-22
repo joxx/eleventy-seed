@@ -1,0 +1,12 @@
+/* Variables and resets */
+:root {
+    --primary-color: #3b82f6;
+    --secondary-color: #8b5cf6;
+    --text-color: #1f2937;
+    --bg-color: #f9fafb;
+    --spacing: 3rem;
+}
+
+* {
+    box-sizing: border-box;
+}

@@ -1,4 +1,27 @@
-export default async function (eleventyConfig) {}
+import * as esbuild from 'esbuild'
+
+export default async function (eleventyConfig) {
+    // Watch our TypeScript & SCSS files for changes.
+    eleventyConfig.addWatchTarget("./src/**/*.ts");
+    eleventyConfig.addWatchTarget("./src/**/*.css");
+
+    // Run the esbuild command before running Eleventy.
+    eleventyConfig.on("eleventy.before", async function () {
+        const isProduction = process.env.NODE_ENV === 'production';
+        
+        await esbuild.build({
+        entryPoints: [
+        { in: "./src/assets/ts/test.ts", out: "assets/bundle" }, // → _site/bundle.js
+        { in: "./src/assets/css/global.css", out: "assets/main" } // → _site/main.css
+    ],
+        outdir: "./_site/",
+        bundle: true,
+        minify: isProduction,
+        sourcemap: !isProduction,
+        plugins: []
+        });
+    });
+}
 
 // This named export is optional
 export const config = {
@@ -14,7 +37,7 @@ export const config = {
 
     // These are all optional:
     dir: {
-        // input: "content",          // default: "."
+        input: "src",              // default: "."
         // includes: "../_includes",  // default: "_includes" (`input` relative)
         // data: "../_data",          // default: "_data" (`input` relative)
         output: "_site",
