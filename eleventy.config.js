@@ -9,16 +9,25 @@ export default async function (eleventyConfig) {
     eleventyConfig.on("eleventy.before", async function () {
         const isProduction = process.env.NODE_ENV === "production";
 
+        // Build CSS (bundled)
         await esbuild.build({
             entryPoints: [
-                { in: "./src/assets/js/test.js", out: "assets/bundle" }, // → _site/bundle.js
-                { in: "./src/assets/css/global.css", out: "assets/main" }, // → _site/main.css
+                { in: "./src/assets/css/global.css", out: "assets/main" },
             ],
             outdir: "./_site/",
             bundle: true,
             minify: isProduction,
             sourcemap: !isProduction,
-            plugins: [],
+        });
+
+        // Build web components/JS files (separate, not bundled)
+        await esbuild.build({
+            entryPoints: ["./src/assets/js/**/*.js"],
+            outdir: "./_site/assets/js",
+            bundle: false, // Keep files separate
+            minify: isProduction,
+            sourcemap: !isProduction,
+            format: "esm", // Use ES modules for web components
         });
     });
 }
