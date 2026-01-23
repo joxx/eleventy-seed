@@ -1,29 +1,25 @@
 import * as esbuild from "esbuild";
 
 export default async function (eleventyConfig) {
-    // Watch our TypeScript & SCSS files for changes.
+    //Watch our TypeScript & SCSS files for changes.
     eleventyConfig.addWatchTarget("./src/**/*.js");
     eleventyConfig.addWatchTarget("./src/**/*.css");
 
     // Run the esbuild command before running Eleventy.
     eleventyConfig.on("eleventy.before", async function () {
         const isProduction = process.env.NODE_ENV === "production";
-
         // Build CSS (bundled)
         await esbuild.build({
-            entryPoints: [
-                { in: "./src/assets/css/global.css", out: "assets/main" },
-            ],
+            entryPoints: ["./src/assets/css/kelp.css"],
             outdir: "./_site/",
             bundle: true,
             minify: isProduction,
             sourcemap: !isProduction,
         });
-
         // Build web components/JS files (separate, not bundled)
         await esbuild.build({
             entryPoints: ["./src/assets/js/**/*.js"],
-            outdir: "./_site/assets/js",
+            outdir: "./_site/",
             bundle: false, // Keep files separate
             minify: isProduction,
             sourcemap: !isProduction,

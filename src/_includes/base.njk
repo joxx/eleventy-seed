@@ -7,10 +7,12 @@ title: My Rad Blog
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="/assets/main.css">
-    <script src="/assets/output.js" defer></script>
+    <link rel="stylesheet" href="kelp.css">
+    <!-- <link rel="stylesheet" href="/assets/main.css"> -->
+    <!-- <script src="/assets/js/test.js" type="module"></script> -->
   </head>
   <body>
     {{ content | safe }}
   </body>
+    <script type="module" src="kelp.js" defer></script>
 </html>
