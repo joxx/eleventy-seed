@@ -1,7 +1,7 @@
 import * as esbuild from "esbuild";
 
 export default async function (eleventyConfig) {
-    //Watch our TypeScript & SCSS files for changes.
+    // Watch our TypeScript & SCSS files for changes.
     eleventyConfig.addWatchTarget("./src/**/*.js");
     eleventyConfig.addWatchTarget("./src/**/*.css");
 
