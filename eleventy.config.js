@@ -16,7 +16,7 @@ export default async function (eleventyConfig) {
         const isProduction = process.env.NODE_ENV === "production";
         // Build CSS (bundled)
         await esbuild.build({
-            entryPoints: ["./src/assets/css/kelp.css"],
+            entryPoints: ["./src/assets/css/global.css"],
             outdir: "./_site/",
             bundle: true,
             minify: isProduction,
@@ -24,7 +24,7 @@ export default async function (eleventyConfig) {
         });
         // Build web components/JS files (separate, not bundled)
         await esbuild.build({
-            entryPoints: ["./src/assets/js/**/*.js"],
+            entryPoints: ["./src/assets/js/test.js"],
             outdir: "./_site/",
             bundle: false, // Keep files separate
             minify: isProduction,
