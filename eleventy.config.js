@@ -3,7 +3,9 @@ import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 
 export default async function (eleventyConfig) {
     // Register the image transform plugin
-    eleventyConfig.addPlugin(eleventyImageTransformPlugin);
+    eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
+        widths: [600, 1000],
+    });
 
     // Watch our TypeScript & SCSS files for changes.
     eleventyConfig.addWatchTarget("./src/**/*.js");
