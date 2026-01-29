@@ -1,12 +1,14 @@
 /* Test esbuild CSS bundling with @import */
-@import './_variables.css';
-@import './_typography.css';
-@import './_components.css';
+@import "./_variables.css";
+@import "./_reset.css";
+@import "./_typography.css";
+@import "./_components.css";
 
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     margin: 0;
     padding: var(--spacing);
 }
@@ -15,4 +17,9 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: calc(var(--spacing) * 2);
+}
+
+img {
+    block-size: auto;
+    max-inline-size: var(--max-img-width, 100%);
 }
