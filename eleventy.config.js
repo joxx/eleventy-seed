@@ -4,7 +4,15 @@ import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 export default async function (eleventyConfig) {
     // Register the image transform plugin
     eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
-        widths: [600, 1000],
+        formats: ["webp", "jpeg"],
+        widths: ["auto"],
+        htmlOptions: {
+            imgAttributes: {
+                loading: "lazy",
+                decoding: "async",
+            },
+            pictureAttributes: {},
+        },
     });
 
     // Watch our TypeScript & SCSS files for changes.
