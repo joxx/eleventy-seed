@@ -1,0 +1,27 @@
+/* Test esbuild CSS bundling with @import */
+@import "./_variables.css";
+@import "./_reset.css";
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+
+figure {
+    float: left;
+    margin: var(--spacing) 0 0 var(--spacing);
+
+    p {
+        margin: 0;
+    }
+
+    img {
+        block-size: auto;
+        max-inline-size: var(--max-img-width, 100%);
+    }
+}

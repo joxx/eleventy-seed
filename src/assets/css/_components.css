@@ -1,3 +1,40 @@
+.fullscreen-container {
+    position: relative;
+    width: 100vw;
+    height: 100dvh;
+    overflow: hidden;
+
+    picture {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    img {
+        /* Verhindere Layout Shift */
+        max-width: 100%;
+        /* GPU-Beschleunigung für smoother Rendering */
+        transform: translateZ(0);
+        /* Bessere Bildqualität beim Skalieren */
+        image-rendering: auto;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
+        display: block;
+    }
+}
+
+.fullscreen-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    filter: invert(1);
+    z-index: 1;
+}
+
 /* Button components */
 .btn {
     background-color: var(--primary-color);
