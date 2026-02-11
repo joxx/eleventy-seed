@@ -2,6 +2,8 @@ import * as esbuild from "esbuild";
 import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 
 export default async function (eleventyConfig) {
+    eleventyConfig.addPassthroughCopy("**/*.avif");
+
     // Register the image transform plugin
     eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
         formats: ["webp", "jpeg"],
