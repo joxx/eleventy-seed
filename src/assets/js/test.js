@@ -13,5 +13,5 @@ Logger.log("TypeScript modules are being bundled");
 // DOM interaction test
 document.addEventListener("DOMContentLoaded", () => {
     Logger.log("DOM loaded");
-    document.body.style.backgroundColor = "#f0f0f0";
+    document.body.style.backgroundColor = "plum";
 });

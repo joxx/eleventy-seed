@@ -1,16 +1,20 @@
 ---
-title: My Rad Blog
+title: Joachim Kliemann
+description: A collection of my images, thoughts, and writings.
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
-    <link rel="stylesheet" href="/assets/main.css">
-    <script src="/assets/output.js" defer></script>
+    <meta name="description" content="{{ description }}">
+    <title>{{ title }} - {{ description }}</title>
+    <link rel="stylesheet" href="main.css">
   </head>
   <body>
+    <main>
     {{ content | safe }}
+    </main>
   </body>
+    <script async src="/main.js"></script>
 </html>
