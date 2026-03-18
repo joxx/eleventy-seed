@@ -1,0 +1,27 @@
+---
+title: Joachim Kliemann
+description: A collection of my images, thoughts, and writings.
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ description }}">
+    <title>{{ title }} - {{ description }}</title>
+    <link rel="stylesheet" href="/main.css">
+    <meta name="htmx-config" content='{"selfRequestsOnly": false}'>
+    <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js"></script>
+  </head>
+  <body>
+    <main
+      hx-get="http://localhost:3000/api/next"
+      hx-trigger="load, click"
+      hx-target="this"
+      hx-swap="afterbegin"
+    >
+    {{ content | safe }}
+    </main>
+  </body>
+  <script async src="/gallery-htmx.js"></script>
+</html>

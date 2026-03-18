@@ -1,5 +1,6 @@
-// Image data
-const imgs = [
+import { createServer } from "node:http";
+
+const IMAGES = [
     "https://imagedelivery.net/QRBZi0maR7ck29L5mhwtsA/901b704a-a7d3-4660-472e-68af475d2800/public",
     "https://imagedelivery.net/QRBZi0maR7ck29L5mhwtsA/08907a34-ab06-4847-2bdd-d931a1fa5500/public",
     "https://imagedelivery.net/QRBZi0maR7ck29L5mhwtsA/58f8d7a2-2a03-48b2-ba22-723aa4c5df00/public",
@@ -32,9 +33,8 @@ const LAST_IMAGE_URL = "assets/img/last.avif";
 const MIN_WIDTH = 25;
 const MAX_WIDTH = 50;
 
-// Utility: Fisher-Yates shuffle algorithm
 function shuffle(array) {
-    const arr = [...array]; // Create copy to avoid mutating the original
+    const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -42,109 +42,88 @@ function shuffle(array) {
     return arr;
 }
 
-// Utility: Generate random width between MIN_WIDTH and MAX_WIDTH (inclusive)
 function getRandomWidth() {
     return Math.floor(Math.random() * (MAX_WIDTH - MIN_WIDTH + 1) + MIN_WIDTH);
 }
 
-// Utility: Create figure element
-function createFigure(url, caption, width) {
-    const figure = document.createElement("figure");
-    figure.style.maxWidth = `${width}%`;
+let shuffledImages = shuffle([...IMAGES]);
+let currentIndex = 0;
+let done = false;
 
-    const img = document.createElement("img");
-    img.src = url;
-    img.alt = ""; // Accessibility: empty alt text for decorative images
-    img.loading = "lazy";
-    img.decoding = "async";
-
-    figure.appendChild(img);
-
-    if (caption) {
-        const figcaption = document.createElement("figcaption");
-        figcaption.textContent = caption;
-        figure.appendChild(figcaption);
-    }
-
-    return figure;
-}
-
-// App State
-const state = {
-    shuffledImages: [],
-    currentIndex: 0,
-    mainElement: null,
-    document: null,
-    done: false,
+const CORS_HEADERS = {
+    "Access-Control-Allow-Origin": "http://localhost:8080",
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Headers": "hx-current-url, hx-request, hx-target, hx-trigger",
 };
 
-// Initialization
-function init() {
-    // Cache DOM element
-    state.mainElement = document.querySelector("main");
-    state.document = document.querySelector("html");
+const server = createServer((req, res) => {
+    const url = new URL(req.url, `http://localhost`);
 
-    if (!state.mainElement) {
-        console.error("Main element not found");
+    Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+
+    if (req.method === "OPTIONS") {
+        res.writeHead(204);
+        res.end();
         return;
     }
 
-    // Shuffle images
-    state.shuffledImages = shuffle(imgs);
-
-    // Display first image
-    const firstFigure = createFigure(
-        state.shuffledImages[0],
-        "",
-        getRandomWidth(),
-    );
-    state.mainElement.prepend(firstFigure);
-    state.currentIndex = 1;
-
-    // Event listeners for click and keyboard
-    state.mainElement.addEventListener("click", handleMainClick);
-    state.document.addEventListener("keydown", (e) => {
-        if (e.key === " " || e.key === "Enter") handleMainClick();
-    });
-
-    // Event delegation for drag prevention (for all images, including future ones)
-    document.addEventListener("dragstart", preventImageDrag, {
-        passive: false,
-    });
-}
-
-// Click/keyboard handler for main element
-function handleMainClick() {
-    console.log("Main element clicked/activated");
-    if (state.done) return;
-
-    const width = getRandomWidth();
-
-    if (state.currentIndex < state.shuffledImages.length) {
-        const figure = createFigure(
-            state.shuffledImages[state.currentIndex],
-            "",
-            width,
-        );
-        state.mainElement.prepend(figure);
-        state.currentIndex++;
-    } else {
-        const figure = createFigure(LAST_IMAGE_URL, "", width);
-        state.mainElement.prepend(figure);
-        state.done = true;
+    if (url.pathname === "/api/reset") {
+        shuffledImages = shuffle([...IMAGES]);
+        currentIndex = 0;
+        done = false;
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: true }));
+        return;
     }
-}
 
-// Prevents dragging of images
-function preventImageDrag(event) {
-    if (event.target.matches("img")) {
-        event.preventDefault();
+    if (url.pathname === "/api/next") {
+        const acceptsHtml = req.headers["accept"]?.includes("text/html");
+
+        if (done) {
+            if (acceptsHtml) {
+                res.writeHead(204);
+                res.end();
+            } else {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ url: LAST_IMAGE_URL, done: true, index: currentIndex, total: IMAGES.length }));
+            }
+            return;
+        }
+
+        let imageUrl;
+        let isDone = false;
+
+        if (currentIndex < shuffledImages.length) {
+            imageUrl = shuffledImages[currentIndex];
+            currentIndex++;
+        } else {
+            imageUrl = LAST_IMAGE_URL;
+            done = true;
+            isDone = true;
+        }
+
+        if (acceptsHtml) {
+            const width = getRandomWidth();
+            const html = `<figure style="max-width: ${width}%"><img src="${imageUrl}" alt="" loading="lazy" decoding="async"></figure>`;
+            if (isDone) {
+                res.writeHead(204);
+                res.end();
+            } else {
+                res.writeHead(200, { "Content-Type": "text/html" });
+                res.end(html);
+            }
+        } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ url: imageUrl, done: isDone, index: currentIndex, total: IMAGES.length }));
+        }
+        return;
     }
-}
 
-// Start app when DOM is ready
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-} else {
-    init();
-}
+    res.writeHead(404);
+    res.end("Not found");
+});
+
+const PORT = process.env.API_PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`API server running at http://localhost:${PORT}`);
+});

@@ -34,7 +34,11 @@ export default async function (eleventyConfig) {
         });
         // Build web components/JS files (separate, not bundled)
         await esbuild.build({
-            entryPoints: ["./src/assets/js/main.js"],
+            entryPoints: [
+                "./src/assets/js/main.js",
+                "./src/assets/js/gallery-fetch.js",
+                "./src/assets/js/gallery-htmx.js",
+            ],
             outdir: "./_site/",
             bundle: false, // Keep files separate
             minify: isProduction,
